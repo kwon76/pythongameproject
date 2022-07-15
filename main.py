@@ -31,6 +31,14 @@ to_y = 0
 #이동 속도
 character_speed = 0.6
 
+#적 enemy 캐릭터
+enemy = pygame.image.load("/home/runner/pythongameproject/enemy.png")
+enemy_size = enemy.get_rect().size  #이미지의 크기를 구해옴
+enemy_width = enemy_size[0]  #첫번째값이 가로 크기
+enemy_height = enemy_size[1]  #두번째값이 세로 크기
+enemy_x_pos = (screen_width - enemy_width) / 2  
+enemy_y_pos = (screen_height - enemy_height) / 2
+
 #이벤트 루프
 running = True #게임이 진행 중인가?
 while running:
@@ -39,6 +47,7 @@ while running:
   for event in pygame.event.get(): #어떤 이벤트가 발생한다면
     if event.type == pygame.QUIT: #창이 닫히는 이벤트가 발생한다면
       running = False #게임 진행을 종료
+      
     #키보드 이벤트
     if event.type == pygame.KEYDOWN:  #키가 눌러졌는지 확인
       if event.key == pygame.K_LEFT:
@@ -70,6 +79,20 @@ while running:
       character_y_pos = 0
   elif character_y_pos > screen_height - character_height:
       character_y_pos = screen_height - character_height
+      
+  #충돌 처리를 위한 rect 정보 업데이트
+  character_rect = character.get_rect()
+  character_rect.left = character_x_pos
+  character_rect.top = character_y_pos
+
+  enemy_rect =enemy.get_rect()
+  enemy_rect.left = enemy_x_pos
+  enemy_rect.top = enemy_y_pos
+
+  #충돌 체크
+  if character_rect.colliderect(enemy_rect): #좌표가 겹쳤는지를 확인해주는 함수
+    print("충돌했어요")
+    running = False
       
   screen.blit(background, (0, 0)) #왼쪽위 모서리에서부터 background를 그려줌(blit)
   screen.blit(character, (character_x_pos, character_y_pos))  
